@@ -4,11 +4,13 @@ import guru.springframework.msscbrewery.web.model.CustomerDto;
 
 import java.util.UUID;
 
+/**
+ * Created by jt on 2019-04-21.
+ */
 public interface CustomerService {
+    CustomerDto getCustomerById(UUID customerId);
 
-    public CustomerDto getCustomerById(UUID id);
-
-    public CustomerDto saveNewCustomer(CustomerDto customerDto);
+    CustomerDto saveNewCustomer(CustomerDto customerDto);
 
     void updateCustomer(UUID customerId, CustomerDto customerDto);
 

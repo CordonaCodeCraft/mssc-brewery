@@ -5,33 +5,36 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+
+/**
+ * Created by jt on 2019-04-21.
+ */
 @Slf4j
 @Service
 public class CustomerServiceImpl implements CustomerService {
     @Override
-    public CustomerDto getCustomerById(UUID id) {
-        return CustomerDto
-                .builder()
+    public CustomerDto getCustomerById(UUID customerId) {
+        return CustomerDto.builder()
                 .id(UUID.randomUUID())
-                .name("Jhon")
+                .name("Joe Buck")
                 .build();
     }
 
     @Override
     public CustomerDto saveNewCustomer(CustomerDto customerDto) {
-        return CustomerDto
-                .builder()
+        return CustomerDto.builder()
                 .id(UUID.randomUUID())
                 .build();
     }
 
     @Override
     public void updateCustomer(UUID customerId, CustomerDto customerDto) {
-       log.debug("Customer updated");
+        //todo impl
+        log.debug("Updating....");
     }
 
     @Override
     public void deleteById(UUID customerId) {
-        log.debug("Customer deleted");
+        log.debug("Deleting.... ");
     }
 }
