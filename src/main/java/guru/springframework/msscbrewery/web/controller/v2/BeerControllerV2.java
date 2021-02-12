@@ -7,7 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Created by jt on 2019-04-23.
@@ -22,13 +26,13 @@ public class BeerControllerV2 {
     }
 
     @GetMapping({"/{beerId}"})
-    public ResponseEntity<BeerDtoV2> getBeer(@PathVariable("beerId") UUID beerId){
+    public ResponseEntity<BeerDtoV2> getBeer(@PathVariable("beerId") UUID beerId) {
 
         return new ResponseEntity<>(beerServiceV2.getBeerById(beerId), HttpStatus.OK);
     }
 
     @PostMapping // POST - create new beer
-    public ResponseEntity handlePost(BeerDtoV2 beerDto){
+    public ResponseEntity handlePost(@Valid @RequestBody BeerDtoV2 beerDto) {
 
         BeerDtoV2 savedDto = beerServiceV2.saveNewBeer(beerDto);
 
@@ -40,7 +44,7 @@ public class BeerControllerV2 {
     }
 
     @PutMapping({"/{beerId}"})
-    public ResponseEntity handleUpdate(@PathVariable("beerId") UUID beerId, BeerDtoV2 beerDto){
+    public ResponseEntity handleUpdate(@PathVariable("beerId") UUID beerId, @Valid @RequestBody BeerDtoV2 beerDto) {
 
         beerServiceV2.updateBeer(beerId, beerDto);
 
@@ -49,7 +53,20 @@ public class BeerControllerV2 {
 
     @DeleteMapping({"/{beerId}"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBeer(@PathVariable("beerId") UUID beerId){
+    public void deleteBeer(@PathVariable("beerId") UUID beerId) {
         beerServiceV2.deleteById(beerId);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<List<String>> validationErrorHandler(ConstraintViolationException e) {
+
+        List<String> errors = e
+                .getConstraintViolations()
+                .stream()
+                .map(error -> String.format("%s : %s", error.getPropertyPath(), error.getMessage()))
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+
     }
 }
