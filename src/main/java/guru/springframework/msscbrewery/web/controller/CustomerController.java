@@ -8,12 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Created by jt on 2019-04-21.
@@ -56,19 +53,5 @@ public class CustomerController {
     public void deleteById(@NotNull @PathVariable("customerId") UUID customerId) {
         customerService.deleteById(customerId);
     }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<List<String>> getErrorMessages(ConstraintViolationException exception) {
-
-        List<String> errors = exception
-                .getConstraintViolations()
-                .stream()
-                .map(error -> String.format("%s : %s", error.getPropertyPath(), error.getMessage()))
-                .collect(Collectors.toList());
-
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-
-    }
-
 
 }
